@@ -3,13 +3,15 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 const (
-	DefaultDataStore = ".kv"
+	DefaultDataStore = ".kv.yml"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -37,29 +39,37 @@ func Execute() {
 }
 
 var (
-	ConfigDir      string
 	inputDataStore string
 )
 
-func initConfig() {
-	viper.SetConfigName(DefaultDataStore)
+func setConfig(input string) string {
 	viper.SetConfigType("yml")
-	if inputDataStore != "" {
-		viper.SetConfigFile(inputDataStore)
+	if input != "" {
+		viper.SetConfigFile(input)
+		viper.AddConfigPath(filepath.Dir(input))
+	} else {
+		dir, err := os.UserHomeDir()
+		if err != nil {
+			dir, err = os.UserConfigDir()
+		}
+		if err != nil {
+			dir, err = os.Getwd()
+		}
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		viper.SetConfigFile(path.Join(dir, DefaultDataStore))
 	}
 
-	var err error
-	ConfigDir, err = os.UserHomeDir()
-	if err != nil {
-		ConfigDir, err = os.UserConfigDir()
+	if err := viper.ReadInConfig(); err != nil {
+		return ""
 	}
-	if err != nil {
-		ConfigDir, err = os.Getwd()
-	}
+	return viper.ConfigFileUsed()
+}
 
-	viper.AddConfigPath(ConfigDir)
-	viper.AutomaticEnv()
-	_ = viper.ReadInConfig()
+func initConfig() {
+	setConfig(inputDataStore)
 }
 
 func init() {
