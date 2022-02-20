@@ -1,4 +1,4 @@
-module kv
+module github.com/allanbreyes/kv
 
 go 1.16
 
