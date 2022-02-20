@@ -16,7 +16,7 @@ const (
 var rootCmd = &cobra.Command{
 	Use:   "kv",
 	Short: "A key-value store CLI",
-	Long: `A lightweight key-value store command-line program, powered by SQLite.
+	Long: `A lightweight key-value store command-line program.
 
 Example:
   $ kv put foo bar
@@ -25,7 +25,6 @@ Example:
   $ kv get foo
   bar
 `,
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
