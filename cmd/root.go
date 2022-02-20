@@ -20,6 +20,8 @@ var rootCmd = &cobra.Command{
 
 Example:
   $ kv put foo bar
+  bar
+
   $ kv get foo
   bar
 `,
